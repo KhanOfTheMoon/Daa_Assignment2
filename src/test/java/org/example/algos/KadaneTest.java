@@ -71,21 +71,21 @@ class KadaneTest {
     @Disabled
     @Test
     void perfSmoke() throws IOException {
-        int[] sizes = {100, 1000, 10000, 100000};
-        int trials = 5;
+        int[] sizes = {10, 100, 1000, 10000, 100000};
+        int trials = 1;
         String out = "results.csv";
         long seed = 42L;
 
         try (CsvWriter csv = new CsvWriter(out)) {
-            csv.header("algo","n","trial","ns","comparisons","arrayAccesses","allocations","maxSum","start","end");
+            csv.header("n","majority","time_ns","comparisons","Array Accesses");
             Counter t = new Counter();
             Random rng = new Random(seed);
             for (int n : sizes) {
                 for (int trial = 1; trial <= trials; trial++) {
                     int[] a = new int[n];
                     for (int i = 0; i < n; i++) a[i] = rng.nextInt(2001) - 1000;
-                    var r = Kadane.kadaneTracked(a, t);
-                    csv.row("Kadane", n, trial, t.getElapsedNanos(), t.getComparisons(), t.getArrayAccesses(), t.getAllocations(), r.maxSum, r.start, r.end);
+                    Kadane.kadaneTracked(a, t);
+                    csv.row(n, 1, t.getElapsedNanos(), t.getComparisons(), t.getArrayAccesses());
                 }
             }
         }

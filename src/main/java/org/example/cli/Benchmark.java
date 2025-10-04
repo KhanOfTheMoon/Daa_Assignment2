@@ -10,8 +10,8 @@ import java.util.Random;
 
 public class Benchmark {
     public static void main(String[] args) {
-        int[] sizes = {100, 1000, 10000, 100000};
-        int trials = 5;
+        int[] sizes = {10, 100, 1000, 10000, 100000};
+        int trials = 1;
         String out = "results.csv";
         long seed = 42L;
 
@@ -25,15 +25,15 @@ public class Benchmark {
         }
 
         try (CsvWriter csv = new CsvWriter(out)) {
-            csv.header("algo","n","trial","ns","comparisons","arrayAccesses","allocations","maxSum","start","end");
+            csv.header("n","majority","time_ns","comparisons","Array Accesses");
             Counter t = new Counter();
             Random rng = new Random(seed);
 
             for (int n : sizes) {
                 for (int trial = 1; trial <= trials; trial++) {
                     int[] a = randomArray(n, rng);
-                    var r = Kadane.kadaneTracked(a, t);
-                    csv.row("Kadane", n, trial, t.getElapsedNanos(), t.getComparisons(), t.getArrayAccesses(), t.getAllocations(), r.maxSum, r.start, r.end);
+                    Kadane.kadaneTracked(a, t);
+                    csv.row(n, 1, t.getElapsedNanos(), t.getComparisons(), t.getArrayAccesses());
                 }
             }
             System.out.println("CSV written: " + out);
