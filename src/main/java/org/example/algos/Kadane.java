@@ -33,11 +33,12 @@ public class Kadane {
         int curSum  = a[0], curL  = 0;
         t.incArrayAccesses(1);
         for (int i = 1; i < a.length; i++) {
-            t.incArrayAccesses(2);
-            int extend = curSum + a[i];
+            int ai = a[i];
+            t.incArrayAccesses(1);
+            int extend = curSum + ai;
             t.incComparisons(1);
-            if (a[i] > extend) { curSum = a[i]; curL = i; }
-            else               { curSum = extend; }
+            if (ai > extend) { curSum = ai; curL = i; }
+            else             { curSum = extend; }
             t.incComparisons(1);
             if (curSum > bestSum) { bestSum = curSum; bestL = curL; bestR = i; }
         }
