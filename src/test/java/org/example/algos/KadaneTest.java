@@ -68,12 +68,12 @@ class KadaneTest {
         assertTrue(t.getElapsedNanos() > 0);
     }
 
-    @Disabled("run manually to generate CSV")
+    @Disabled
     @Test
     void perfSmoke() throws IOException {
         int[] sizes = {100, 1000, 10000, 100000};
         int trials = 5;
-        String out = "kadane_results.csv";
+        String out = "results.csv";
         long seed = 42L;
 
         try (CsvWriter csv = new CsvWriter(out)) {
@@ -81,15 +81,24 @@ class KadaneTest {
             Counter t = new Counter();
             Random rng = new Random(seed);
             for (int n : sizes) {
-                if (n <= 0) continue;
                 for (int trial = 1; trial <= trials; trial++) {
-                    int[] a = randomArray(n, rng);
+                    int[] a = new int[n];
+                    for (int i = 0; i < n; i++) a[i] = rng.nextInt(2001) - 1000;
                     var r = Kadane.kadaneTracked(a, t);
                     csv.row("Kadane", n, trial, t.getElapsedNanos(), t.getComparisons(), t.getArrayAccesses(), t.getAllocations(), r.maxSum, r.start, r.end);
                 }
             }
         }
     }
+
+    @Test
+    void nullArray() {
+        var r = Kadane.kadane(null);
+        assertEquals(0, r.maxSum);
+        assertEquals(-1, r.start);
+        assertEquals(-1, r.end);
+    }
+
 
     private static int[] randomArray(int n, Random rng) {
         int[] a = new int[n];

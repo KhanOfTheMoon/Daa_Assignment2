@@ -16,8 +16,18 @@ public final class CsvWriter implements Closeable, Flushable {
         writeRow(s);
     }
     private void writeRow(String... cols) throws IOException {
-        bw.write(String.join(",", cols));
-        bw.write("\n");
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < cols.length; i++) {
+            if (i > 0) sb.append(',');
+            sb.append(escape(cols[i]));
+        }
+        sb.append(System.lineSeparator());
+        bw.write(sb.toString());
+    }
+    private static String escape(String v) {
+        boolean needsQuote = v.contains(",") || v.contains("\"") || v.contains("\n") || v.contains("\r");
+        String s = v.replace("\"", "\"\"");
+        return needsQuote ? "\"" + s + "\"" : s;
     }
     @Override public void flush() throws IOException { bw.flush(); }
     @Override public void close() throws IOException { bw.close(); }

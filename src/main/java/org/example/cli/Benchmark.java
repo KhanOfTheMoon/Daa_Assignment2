@@ -12,7 +12,7 @@ public class Benchmark {
     public static void main(String[] args) {
         int[] sizes = {100, 1000, 10000, 100000};
         int trials = 5;
-        String out = "kadane_results.csv";
+        String out = "results.csv";
         long seed = 42L;
 
         for (int i = 0; i < args.length; i++) {
@@ -30,7 +30,6 @@ public class Benchmark {
             Random rng = new Random(seed);
 
             for (int n : sizes) {
-                if (n <= 0) continue;
                 for (int trial = 1; trial <= trials; trial++) {
                     int[] a = randomArray(n, rng);
                     var r = Kadane.kadaneTracked(a, t);
